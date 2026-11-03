@@ -1,5 +1,5 @@
 <div{{ attributes }}>
-
+    <h1>Liste des taches</h1>
     {# Affichage des erreurs flash #}
     <div class="toast-container position-fixed top-0 end-0 m-3">
         {% for label, messages in app.flashes %}
@@ -55,6 +55,7 @@
             <th>Details</th>
             <th>Date de creation</th>
             <th>Date limite</th>
+            <th>Priorité</th>
             <th>Actions</th>
             <th>Terminer</th>
         </tr>
@@ -67,6 +68,7 @@
                 <td>{{ task.details }}</td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
+                <td>{{ task.priority }}</td>
                 <td>
                     <a href="{{ path('app_task_show', {'id': task.id}) }}">Voir</a>
                     <a href="{{ path('app_task_edit', {'id': task.id}) }}">Modifier</a>
@@ -98,6 +100,7 @@
             <th>Details</th>
             <th>Date de creation</th>
             <th>Date limite</th>
+            <th>Priorité</th>
             <th>Actions</th>
             <th>Terminer</th>
         </tr>
@@ -111,6 +114,7 @@
                 <td>{{ task.details }}</td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
+                <td>{{ task.priority }}</td>
                 <td>
                     <a role="link" aria-disabled="true">Voir</a>
                     <a role="link" aria-disabled="true">Modifier</a>
@@ -132,4 +136,6 @@
         {% endfor %}
         </tbody>
     </table>
+    <a href="{{ path('app_task_new') }}">Nouvelle tache</a>
 </div>
+
