@@ -66,7 +66,19 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
-                <td>{{ task.priority.label }}</td>
+                <td>
+                    {% set label = task.priority.label %}
+
+                    {% if label == 'Basse' %}
+                        <span class="badge bg-success">Basse</span>
+                    {% elseif label == 'Normale' %}
+                        <span class="badge bg-warning">Normale</span>
+                    {% elseif label == 'Haute' %}
+                        <span class="badge bg-danger">Haute</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inconnue</span>
+                    {% endif %}
+                </td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
                 <td>
@@ -112,7 +124,19 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
-                <td>{{ task.priority.label }}</td>
+                <td>
+                    {% set label = task.priority.label %}
+
+                    {% if label == 'Basse' %}
+                        <p class="badge bg-success">Basse</p>
+                    {% elseif label == 'Normale' %}
+                        <span class="badge bg-warning">Normale</span>
+                    {% elseif label == 'Haute' %}
+                        <span class="badge bg-danger">Haute</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inconnue</span>
+                    {% endif %}
+                </td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
                 <td>
