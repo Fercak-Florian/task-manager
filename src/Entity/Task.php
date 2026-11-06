@@ -33,7 +33,7 @@ class Task
     private bool $completed = false;
 
     #[ORM\Column(length: 12, nullable: false)]
-    private string $priority = 'low';
+    private TaskPriority $priority = TaskPriority::LOW;
 
     public function getId(): ?int
     {
@@ -116,12 +116,13 @@ class Task
         $this->completed = !$this->completed;
     }
 
-    public function getPriority(): string
+    public function getPriority(): TaskPriority
     {
         return $this->priority;
+
     }
 
-    public function setPriority(string $priority): static
+    public function setPriority(TaskPriority $priority): static
     {
         $this->priority = $priority;
 

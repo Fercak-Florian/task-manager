@@ -53,9 +53,9 @@
             <th>Id</th>
             <th>Titre</th>
             <th>Details</th>
+            <th>Priorité</th>
             <th>Date de creation</th>
             <th>Date limite</th>
-            <th>Priorité</th>
             <th>Actions</th>
             <th>Terminer</th>
         </tr>
@@ -66,9 +66,9 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
+                <td>{{ task.priority.label }}</td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
-                <td>{{ task.priority }}</td>
                 <td>
                     <a href="{{ path('app_task_show', {'id': task.id}) }}">Voir</a>
                     <a href="{{ path('app_task_edit', {'id': task.id}) }}">Modifier</a>
@@ -98,9 +98,9 @@
             <th>Id</th>
             <th>Titre</th>
             <th>Details</th>
+            <th>Priorité</th>
             <th>Date de creation</th>
             <th>Date limite</th>
-            <th>Priorité</th>
             <th>Actions</th>
             <th>Terminer</th>
         </tr>
@@ -112,9 +112,9 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
+                <td>{{ task.priority.label }}</td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
-                <td>{{ task.priority }}</td>
                 <td>
                     <a role="link" aria-disabled="true">Voir</a>
                     <a role="link" aria-disabled="true">Modifier</a>
