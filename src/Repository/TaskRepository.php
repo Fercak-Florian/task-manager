@@ -46,20 +46,43 @@ class TaskRepository extends ServiceEntityRepository
                 $targetField = 't.deadline';
                 $sortMode = 'ASC';
                 break;
+            case TaskSortMode::HIGH_PRIORITY:
+                $targetField = 't.priority';
+                $sortMode = 'ASC';
+                break;
+            case TaskSortMode::LOW_PRIORITY:
+                $targetField = 't.priority';
+                $sortMode = 'DESC';
+                break;
         }
 
 
-        return $this->createQueryBuilder('t')
+        $qb = $this->createQueryBuilder('t')
             ->andWhere('t.title LIKE :val')
             ->andWhere('t.user = :user')
             ->andWhere('t.completed = :completed')
-            ->setParameter('val', $keyWord)
+            ->setParameter('val', '%' . $keyWord . '%')
             ->setParameter('user', $currentUser)
-            ->setParameter('completed', $isCompleted)
-            ->orderBy($targetField, $sortMode)
-            ->getQuery()
-            ->getResult()
-            ;
+            ->setParameter('completed', $isCompleted);
+
+        if ($targetField === 'priority') {
+            $qb->addSelect("
+        CASE
+            WHEN t.priority = :high THEN 1
+            WHEN t.priority = :normal THEN 2
+            WHEN t.priority = :low THEN 3
+            ELSE 4
+        END AS HIDDEN priorityOrder
+    ")
+                ->setParameter('high', 'Haute')
+                ->setParameter('normal', 'Normale')
+                ->setParameter('low', 'Basse')
+                ->orderBy('priorityOrder', $sortMode);
+        } else {
+            $qb->orderBy($targetField, $sortMode);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function findUserCompletedTasks(User $currentUser): array {
