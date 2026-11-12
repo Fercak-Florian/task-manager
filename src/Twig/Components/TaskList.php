@@ -23,13 +23,58 @@ final class TaskList extends AbstractController
     #[LiveProp(writable: true)]
     public string $keyWord = '';
 
-    #[LiveProp(writable: true)]
+    #[LiveProp]
     public string $sortMode = 'created_desc';
+
+    #[LiveProp]
+    public string $createdAtDirection = 'desc';
+
+    #[LiveProp]
+    public string $deadlineDirection = 'asc';
+
+    #[LiveProp]
+    public string $priorityDirection = 'desc';
 
     public function __construct(private TaskRepository $taskRepository,
                                 private Security $security,
                                 private EntityManagerInterface $entityManager)
     {
+    }
+
+    #[LiveAction]
+    public function sortByCreatedAt() {
+        // inverser le sens
+        if ($this->createdAtDirection === 'desc') {
+            $this->createdAtDirection = 'asc';
+            $this->sortMode = 'created_asc';
+        } else {
+            $this->createdAtDirection = 'desc';
+            $this->sortMode = 'created_desc';
+        }
+    }
+
+    #[LiveAction]
+    public function sortByDeadline() {
+        // inverser le sens
+        if ($this->deadlineDirection === 'desc') {
+            $this->deadlineDirection = 'asc';
+            $this->sortMode = 'deadline_asc';
+        } else {
+            $this->deadlineDirection = 'desc';
+            $this->sortMode = 'deadline_desc';
+        }
+    }
+
+    #[LiveAction]
+    public function sortByPriority() {
+        // inverser le sens
+        if ($this->priorityDirection === 'desc') {
+            $this->priorityDirection = 'asc';
+            $this->sortMode = 'a definir';
+        } else {
+            $this->priorityDirection = 'desc';
+            $this->sortMode = 'a definir';
+        }
     }
 
     public function getTasksByCriteria(): array
