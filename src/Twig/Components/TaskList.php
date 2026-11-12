@@ -42,39 +42,33 @@ final class TaskList extends AbstractController
     }
 
     #[LiveAction]
-    public function sortByCreatedAt() {
-        // inverser le sens
-        if ($this->createdAtDirection === 'desc') {
-            $this->createdAtDirection = 'asc';
-            $this->sortMode = 'created_asc';
-        } else {
-            $this->createdAtDirection = 'desc';
-            $this->sortMode = 'created_desc';
-        }
+    public function sortByCreatedAt(): void {
+        $this->createdAtDirection = $this->toggleSortDirection($this->createdAtDirection);
+        $this->updateSortMode('created', $this->createdAtDirection);
     }
 
     #[LiveAction]
-    public function sortByDeadline() {
-        // inverser le sens
-        if ($this->deadlineDirection === 'desc') {
-            $this->deadlineDirection = 'asc';
-            $this->sortMode = 'deadline_asc';
-        } else {
-            $this->deadlineDirection = 'desc';
-            $this->sortMode = 'deadline_desc';
-        }
+    public function sortByDeadline(): void {
+        $this->deadlineDirection = $this->toggleSortDirection($this->deadlineDirection);
+        $this->updateSortMode('deadline', $this->deadlineDirection);
     }
 
     #[LiveAction]
-    public function sortByPriority() {
-        // inverser le sens
-        if ($this->priorityDirection === 'desc') {
-            $this->priorityDirection = 'asc';
-            $this->sortMode = 'a definir';
+    public function sortByPriority(): void {
+        $this->priorityDirection = $this->toggleSortDirection($this->priorityDirection);
+        $this->updateSortMode('priority', $this->priorityDirection);
+    }
+
+    private function toggleSortDirection(string $direction): string {
+        if ($direction === 'desc') {
+            return 'asc';
         } else {
-            $this->priorityDirection = 'desc';
-            $this->sortMode = 'a definir';
+            return 'desc';
         }
+    }
+
+    private function updateSortMode(string $criteriaName, string $direction): void {
+        $this->sortMode = $criteriaName.'_'.$direction;
     }
 
     public function getTasksByCriteria(): array
