@@ -24,13 +24,13 @@ final class TaskList extends AbstractController
     public string $keyWord = '';
 
     #[LiveProp]
-    public string $sortMode = 'created_desc';
+    public TaskSortMode $sortMode = TaskSortMode::CREATED_ASC;
 
     #[LiveProp]
-    public string $createdAtDirection = 'desc';
+    public string $createdAtDirection = 'asc';
 
     #[LiveProp]
-    public string $deadlineDirection = 'asc';
+    public string $deadlineDirection = 'desc';
 
     #[LiveProp]
     public string $priorityDirection = 'desc';
@@ -68,7 +68,14 @@ final class TaskList extends AbstractController
     }
 
     private function updateSortMode(string $criteriaName, string $direction): void {
-        $this->sortMode = $criteriaName.'_'.$direction;
+        match ($criteriaName.'_'.$direction) {
+            'created_asc' => $this->sortMode = TaskSortMode::CREATED_ASC,
+            'created_desc' => $this->sortMode = TaskSortMode::CREATED_DESC,
+            'deadline_asc' => $this->sortMode = TaskSortMode::DEADLINE_ASC,
+            'deadline_desc' => $this->sortMode = TaskSortMode::DEADLINE_DESC,
+            'priority_asc' => $this->sortMode = TaskSortMode::PRIORITY_ASC,
+            'priority_desc' => $this->sortMode = TaskSortMode::PRIORITY_DESC,
+        };
     }
 
     public function getTasksByCriteria(): array
@@ -78,9 +85,7 @@ final class TaskList extends AbstractController
             return [];
         }
 
-        $taskSortMode = TaskSortMode::tryFrom($this->sortMode) ?? TaskSortMode::CREATED_DESC;
-
-        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $taskSortMode, false);
+        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode, false);
         return $this->taskRepository->findByCriteria($taskSearchCriteria, $currentUser);
     }
 
