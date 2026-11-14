@@ -4,8 +4,10 @@ namespace App\Form;
 
 use App\Entity\Task;
 
+use App\Enum\TaskPriority;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,6 +26,11 @@ class TaskType extends AbstractType
             ])
             ->add('deadline', DateType::class, [
                 'label' => 'Date limite'
+            ])
+            ->add('priority', EnumType::class, [
+                'class' => TaskPriority::class,
+                'label' => 'Priorité',
+                'choice_label' => fn(TaskPriority $priority) => $priority->getLabel(),
             ])
         ;
     }

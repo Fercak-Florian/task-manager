@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\TaskPriority;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,6 +31,9 @@ class Task
 
     #[ORM\Column]
     private bool $completed = false;
+
+    #[ORM\Column(length: 12, nullable: false)]
+    private TaskPriority $priority = TaskPriority::LOW;
 
     public function getId(): ?int
     {
@@ -110,5 +114,18 @@ class Task
 
     public function toggleStatus(): void {
         $this->completed = !$this->completed;
+    }
+
+    public function getPriority(): TaskPriority
+    {
+        return $this->priority;
+
+    }
+
+    public function setPriority(TaskPriority $priority): static
+    {
+        $this->priority = $priority;
+
+        return $this;
     }
 }

@@ -1,5 +1,5 @@
 <div{{ attributes }}>
-
+    <h1>Liste des taches</h1>
     {# Affichage des erreurs flash #}
     <div class="toast-container position-fixed top-0 end-0 m-3">
         {% for label, messages in app.flashes %}
@@ -34,14 +34,6 @@
         <div class="col-auto">
             <input type="search" data-model="keyWord" id="search-bar" class="form-control">
         </div>
-        <div class="col-auto">
-            <select data-model="sortMode" class="form-select" aria-label="Default select example">
-                <option value="created_desc">Du plus récent au plus ancien</option>
-                <option value="created_asc">Du plus ancien au plus récent</option>
-                <option value="deadline_desc">Du plus urgent au moins urgent</option>
-                <option value="deadline_asc">Du moins urgent au plus urgent</option>
-            </select>
-        </div>
     </div>
 
 
@@ -53,8 +45,32 @@
             <th>Id</th>
             <th>Titre</th>
             <th>Details</th>
-            <th>Date de creation</th>
-            <th>Date limite</th>
+            <th>Priorité
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    data-action="live#action"
+                    data-live-action-param="sortByPriority">
+                    ⇅
+                </button></th>
+            <th>Date de creation
+                <button
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        data-action="live#action"
+                        data-live-action-param="sortByCreatedAt">
+                    ⇅
+                </button>
+            </th>
+            <th>Date limite
+                <button
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        data-action="live#action"
+                        data-live-action-param="sortByDeadline">
+                    ⇅
+                </button>
+            </th>
             <th>Actions</th>
             <th>Terminer</th>
         </tr>
@@ -65,6 +81,19 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
+                <td>
+                    {% set label = task.priority.label %}
+
+                    {% if label == 'Basse' %}
+                        <span class="badge bg-success">Basse</span>
+                    {% elseif label == 'Normale' %}
+                        <span class="badge bg-warning">Normale</span>
+                    {% elseif label == 'Haute' %}
+                        <span class="badge bg-danger">Haute</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inconnue</span>
+                    {% endif %}
+                </td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
                 <td>
@@ -96,6 +125,7 @@
             <th>Id</th>
             <th>Titre</th>
             <th>Details</th>
+            <th>Priorité</th>
             <th>Date de creation</th>
             <th>Date limite</th>
             <th>Actions</th>
@@ -109,6 +139,19 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
+                <td>
+                    {% set label = task.priority.label %}
+
+                    {% if label == 'Basse' %}
+                        <p class="badge bg-success">Basse</p>
+                    {% elseif label == 'Normale' %}
+                        <span class="badge bg-warning">Normale</span>
+                    {% elseif label == 'Haute' %}
+                        <span class="badge bg-danger">Haute</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inconnue</span>
+                    {% endif %}
+                </td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
                 <td>
@@ -132,4 +175,6 @@
         {% endfor %}
         </tbody>
     </table>
+    <a href="{{ path('app_task_new') }}">Nouvelle tache</a>
 </div>
+

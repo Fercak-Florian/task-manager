@@ -4,9 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Task;
 use App\Entity\User;
+use App\Enum\TaskPriority;
 use App\Enum\TaskSortMode;
 use App\Utils\TaskSearchCriteria;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -26,42 +28,43 @@ class TaskRepository extends ServiceEntityRepository
     {
         $keyWord = '%' . $taskSearchCriteria->getKeyWord() . '%';
         $isCompleted = $taskSearchCriteria->isCompleted();
-        $sortMode = '';
-        $targetField = '';
+        $sortMode = $taskSearchCriteria->getSortMode();
 
-        switch ($taskSearchCriteria->getSortMode()) {
-            case TaskSortMode::CREATED_DESC:
-                $targetField = 't.createdAt';
-                $sortMode = 'DESC';
-                break;
-            case TaskSortMode::CREATED_ASC:
-                $targetField = 't.createdAt';
-                $sortMode = 'ASC';
-                break;
-            case TaskSortMode::DEADLINE_DESC:
-                $targetField = 't.deadline';
-                $sortMode = 'DESC';
-                break;
-            case TaskSortMode::DEADLINE_ASC:
-                $targetField = 't.deadline';
-                $sortMode = 'ASC';
-                break;
-        }
-
-
-        return $this->createQueryBuilder('t')
+        $qb = $this->createQueryBuilder('t')
             ->andWhere('t.title LIKE :val')
             ->andWhere('t.user = :user')
             ->andWhere('t.completed = :completed')
             ->setParameter('val', $keyWord)
             ->setParameter('user', $currentUser)
-            ->setParameter('completed', $isCompleted)
-            ->orderBy($targetField, $sortMode)
-            ->getQuery()
-            ->getResult()
-            ;
+            ->setParameter('completed', $isCompleted);
+
+        $this->applySorting($qb, $sortMode);
+
+        return $qb->getQuery()->getResult();
     }
 
+    private function applySorting(QueryBuilder $qb, TaskSortMode $sortMode): void
+    {
+        if (in_array($sortMode, [
+            TaskSortMode::PRIORITY_ASC,
+            TaskSortMode::PRIORITY_DESC,
+        ], true)) {
+            $qb->addSelect("
+        CASE
+            WHEN t.priority = :high THEN 1
+            WHEN t.priority = :normal THEN 2
+            WHEN t.priority = :low THEN 3
+            ELSE 4
+        END AS HIDDEN priorityOrder
+    ")
+                ->setParameter('high', TaskPriority::HIGH->value)
+                ->setParameter('normal', TaskPriority::NORMAL->value)
+                ->setParameter('low', TaskPriority::LOW->value)
+                ->orderBy('priorityOrder', $sortMode->getDirection());
+        } else {
+            $qb->orderBy('t.'.$sortMode->getField(), $sortMode->getDirection());
+        }
+    }
     public function findUserCompletedTasks(User $currentUser): array {
         return $this->createQueryBuilder('t')
             ->andWhere('t.user = :user')
