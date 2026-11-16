@@ -26,8 +26,8 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_task_index', queryParams) }}">Liste des tâches</a>
-    <a href="{{ path('app_task_edit', {'id': task.id, queryParams}) }}">Modifier</a>
+    <a href="{{ path('app_task_index', {keyWord, sortMode}) }}">Liste des tâches</a>
+    <a href="{{ path('app_task_edit', {'id': task.id, keyWord, sortMode}) }}">Modifier</a>
 
     {{ include('task/_delete_form.html.twig') }}
 {% endblock %}

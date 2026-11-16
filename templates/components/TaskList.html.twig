@@ -97,8 +97,8 @@
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
                 <td>
-                    <a href="{{ path('app_task_show', {'id': task.id, 'keyWord': keyWord}) }}">Voir</a>
-                    <a href="{{ path('app_task_edit', {'id': task.id, 'keyWord': keyWord}) }}">Modifier</a>
+                    <a href="{{ path('app_task_show', {'id': task.id, 'keyWord': keyWord, 'sortMode': sortMode.value}) }}">Voir</a>
+                    <a href="{{ path('app_task_edit', {'id': task.id, 'keyWord': keyWord, 'sortMode': sortMode.value}) }}">Modifier</a>
                 </td>
                 <td>
                     <input
@@ -175,6 +175,6 @@
         {% endfor %}
         </tbody>
     </table>
-    <a href="{{ path('app_task_new') }}">Nouvelle tache</a>
+    <a href="{{ path('app_task_new', {'keyWord': keyWord, 'sortMode': sortMode.value}) }}">Nouvelle tache</a>
 </div>
 
