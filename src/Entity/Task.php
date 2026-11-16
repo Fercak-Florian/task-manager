@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\TaskPriority;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,6 +19,21 @@ class Task
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?User $user = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $details = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $deadline = null;
+
+    #[ORM\Column]
+    private bool $completed = false;
+
+    #[ORM\Column(length: 12, nullable: false)]
+    private TaskPriority $priority = TaskPriority::LOW;
 
     public function getId(): ?int
     {
@@ -44,6 +60,71 @@ class Task
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getDetails(): ?string
+    {
+        return $this->details;
+    }
+
+    public function setDetails(?string $details): static
+    {
+        $this->details = $details;
+
+        return $this;
+    }
+
+    public function getDeadline(): ?\DateTime
+    {
+        return $this->deadline;
+    }
+
+    public function setDeadline(?\DateTime $deadline): static
+    {
+        $this->deadline = $deadline;
+
+        return $this;
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->completed;
+    }
+
+    public function setCompleted(bool $completed): static
+    {
+        $this->completed = $completed;
+
+        return $this;
+    }
+
+    public function toggleStatus(): void {
+        $this->completed = !$this->completed;
+    }
+
+    public function getPriority(): TaskPriority
+    {
+        return $this->priority;
+
+    }
+
+    public function setPriority(TaskPriority $priority): static
+    {
+        $this->priority = $priority;
 
         return $this;
     }
