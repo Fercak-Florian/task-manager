@@ -20,7 +20,7 @@ final class TaskList extends AbstractController
 {
     use DefaultActionTrait;
 
-    #[LiveProp(writable: true)]
+    #[LiveProp(writable: true, url: true)]
     public string $keyWord = '';
 
     #[LiveProp]
