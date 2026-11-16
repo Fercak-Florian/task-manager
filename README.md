@@ -71,7 +71,7 @@ Quelques éléments de conception mis en place :
 
 ```bash
 git clone https://github.com/Fercak-Florian/task-manager.git
-cd TON-DEPOT
+cd task-manager
 ```
 
 ### 2. Installer les dépendances
