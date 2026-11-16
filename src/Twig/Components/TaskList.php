@@ -78,6 +78,13 @@ final class TaskList extends AbstractController
         };
     }
 
+    #[LiveAction]
+    public function resetFilters(): void
+    {
+        $this->keyWord = '';
+        $this->sortMode = TaskSortMode::CREATED_ASC;
+    }
+
     public function getTasksByCriteria(): array
     {
         $currentUser = $this->security->getUser();
