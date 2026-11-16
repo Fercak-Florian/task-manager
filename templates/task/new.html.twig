@@ -7,5 +7,5 @@
 
     {{ include('task/_form.html.twig', {'button_label': 'Ajouter'}) }}
 
-    <a href="{{ path('app_task_index') }}">Liste des tâches</a>
+    <a href="{{ path('app_task_index', {keyWord, sortMode}) }}">Liste des tâches</a>
 {% endblock %}

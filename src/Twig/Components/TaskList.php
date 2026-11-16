@@ -20,20 +20,11 @@ final class TaskList extends AbstractController
 {
     use DefaultActionTrait;
 
-    #[LiveProp(writable: true)]
+    #[LiveProp(writable: true, url: true)]
     public string $keyWord = '';
 
-    #[LiveProp]
+    #[LiveProp(writable: false, url: true)]
     public TaskSortMode $sortMode = TaskSortMode::CREATED_ASC;
-
-    #[LiveProp]
-    public string $createdAtDirection = 'asc';
-
-    #[LiveProp]
-    public string $deadlineDirection = 'desc';
-
-    #[LiveProp]
-    public string $priorityDirection = 'desc';
 
     public function __construct(private TaskRepository $taskRepository,
                                 private Security $security,
@@ -43,28 +34,37 @@ final class TaskList extends AbstractController
 
     #[LiveAction]
     public function sortByCreatedAt(): void {
-        $this->createdAtDirection = $this->toggleSortDirection($this->createdAtDirection);
-        $this->updateSortMode('created', $this->createdAtDirection);
+        if ($this->sortMode === TaskSortMode::CREATED_ASC) {
+            $direction = 'desc';
+        } else {
+            $direction = 'asc';
+        }
+        $this->updateSortMode('created', $direction);
     }
 
     #[LiveAction]
     public function sortByDeadline(): void {
-        $this->deadlineDirection = $this->toggleSortDirection($this->deadlineDirection);
-        $this->updateSortMode('deadline', $this->deadlineDirection);
+        if ($this->sortMode === TaskSortMode::DEADLINE_ASC) {
+            $direction = 'desc';
+        } else {
+            $direction = 'asc';
+        }
+        $this->updateSortMode('deadline', $direction);
     }
 
     #[LiveAction]
     public function sortByPriority(): void {
-        $this->priorityDirection = $this->toggleSortDirection($this->priorityDirection);
-        $this->updateSortMode('priority', $this->priorityDirection);
+        if ($this->sortMode === TaskSortMode::PRIORITY_ASC) {
+            $direction = 'desc';
+        } else {
+            $direction = 'asc';
+        }
+        $this->updateSortMode('priority', $direction);
     }
 
-    private function toggleSortDirection(string $direction): string {
-        if ($direction === 'desc') {
-            return 'asc';
-        } else {
-            return 'desc';
-        }
+    private function toggleSortDirection(): string {
+        // TO DO -> factoriser pour éviter la répétition des 3 if/else
+        return "";
     }
 
     private function updateSortMode(string $criteriaName, string $direction): void {
