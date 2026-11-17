@@ -128,4 +128,23 @@ class Task
 
         return $this;
     }
+
+    public function getDaysLate(): int
+    {
+        if ($this->deadline === null) {
+            return 0;
+        }
+        $roundedDeadline = $this->deadline->setTime(0,0,0);
+        $now = new \DateTimeImmutable()->setTime(0, 0,0);
+        if ($roundedDeadline < $now) {
+            return $roundedDeadline->diff($now)->days;
+        }
+        return 0;
+    }
+
+    public function isLate(): bool
+    {
+        $dayLate = $this->getDaysLate();
+        return (!$this->completed) && ($dayLate > 0);
+    }
 }

@@ -88,6 +88,7 @@
             </th>
             <th>Actions</th>
             <th>Terminer</th>
+            <th>Jours de retard</th>
         </tr>
         </thead>
         <tbody>
@@ -123,6 +124,13 @@
                         data-live-id-param="{{ task.id }}"
                         {% if task.completed %}checked{% endif %}
                     >
+                </td>
+                <td>
+                    {% if task.getDaysLate === 0 %}
+                        aucun
+                    {% else %}
+                        {{ task.getDaysLate }}
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
