@@ -9,17 +9,19 @@ class TaskSearchCriteria
     private string $keyWord;
     private TaskSortMode $sortMode;
     private bool $isCompleted = false;
+    private bool $isLate;
 
     /**
      * @param string $keyWord
      * @param TaskSortMode $sortMode
      * @param bool $isCompleted
      */
-    public function __construct(string $keyWord, TaskSortMode $sortMode, bool $isCompleted)
+    public function __construct(string $keyWord, TaskSortMode $sortMode, bool $isCompleted, bool $isLate)
     {
         $this->keyWord = $keyWord;
         $this->sortMode = $sortMode;
         $this->isCompleted = $isCompleted;
+        $this->isLate = $isLate;
     }
 
     public function isCompleted(): bool
@@ -50,5 +52,14 @@ class TaskSearchCriteria
     public function setKeyWord(string $keyWord): void
     {
         $this->keyWord = $keyWord;
+    }
+    public function isLate(): bool
+    {
+        return $this->isLate;
+    }
+
+    public function setIsLate(bool $isLate): void
+    {
+        $this->isLate = $isLate;
     }
 }
