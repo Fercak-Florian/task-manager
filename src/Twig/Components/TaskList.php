@@ -26,6 +26,9 @@ final class TaskList extends AbstractController
     #[LiveProp(writable: false, url: true)]
     public TaskSortMode $sortMode = TaskSortMode::CREATED_ASC;
 
+    #[LiveProp(writable: true, url: true)]
+    public bool $isLate = false;
+
     public function __construct(private TaskRepository $taskRepository,
                                 private Security $security,
                                 private EntityManagerInterface $entityManager)
@@ -62,6 +65,15 @@ final class TaskList extends AbstractController
         $this->updateSortMode('priority', $direction);
     }
 
+    #[LiveAction]
+    public function getOverdueTasks(): void {
+        if ($this->isLate) {
+            $this->isLate = false;
+        } else {
+            $this->isLate = true;
+        }
+    }
+
     private function toggleSortDirection(): string {
         // TO DO -> factoriser pour éviter la répétition des 3 if/else
         return "";
@@ -92,7 +104,7 @@ final class TaskList extends AbstractController
             return [];
         }
 
-        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode, false);
+        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode, false, $this->isLate);
         return $this->taskRepository->findByCriteria($taskSearchCriteria, $currentUser);
     }
 

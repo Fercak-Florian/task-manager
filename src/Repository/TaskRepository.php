@@ -29,6 +29,11 @@ class TaskRepository extends ServiceEntityRepository
         $keyWord = '%' . $taskSearchCriteria->getKeyWord() . '%';
         $isCompleted = $taskSearchCriteria->isCompleted();
         $sortMode = $taskSearchCriteria->getSortMode();
+        $isLate = $taskSearchCriteria->isLate();
+
+        if ($isLate) {
+            $isCompleted = false;
+        }
 
         $qb = $this->createQueryBuilder('t')
             ->andWhere('t.title LIKE :val')
@@ -37,6 +42,14 @@ class TaskRepository extends ServiceEntityRepository
             ->setParameter('val', $keyWord)
             ->setParameter('user', $currentUser)
             ->setParameter('completed', $isCompleted);
+
+
+        if ($isLate) {
+            $today = new \DateTimeImmutable()->setTime(0,0,0);
+            $qb->setParameter('today', $today)
+                ->andWhere('t.deadline IS NOT NULL')
+                ->andWhere('t.deadline < :today');
+        }
 
         $this->applySorting($qb, $sortMode);
 
