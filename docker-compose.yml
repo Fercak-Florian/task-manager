@@ -1,0 +1,65 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+      target: nginx
+    container_name: symfony_nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+    networks:
+      - symfony_net
+
+  php:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+      target: php
+    container_name: symfony_php
+    environment:
+      DATABASE_URL: mysql://symfony:symfony@database:3306/task_manager?serverVersion=8.0
+    networks:
+      - symfony_net
+
+  migrations:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+      target: php
+    command: php bin/console doctrine:migrations:migrate --no-interaction
+    environment:
+      DATABASE_URL: mysql://symfony:symfony@database:3306/task_manager?serverVersion=8.0
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - symfony_net
+
+  database:
+    image: mysql:8.0
+    container_name: symfony_database
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: task_manager
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    volumes:
+      - symfony_db_data:/var/lib/mysql
+    networks:
+      - symfony_net
+
+networks:
+  symfony_net:
+    driver: bridge
+
+volumes:
+  symfony_db_data:
