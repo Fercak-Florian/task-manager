@@ -1,0 +1,203 @@
+<div{{ attributes }}>
+    <h1>Liste des taches</h1>
+    {# Affichage des erreurs flash #}
+    <div class="toast-container position-fixed top-0 end-0 m-3">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                    <div
+                        data-controller="flash"
+                        class="toast show align-items-center text-white bg-{{ label === 'error' ? 'danger' : label }} border-0 w-auto">
+                        <div class="toast-body">
+                            <div class="d-flex">
+                                <div>
+                                    {{ message }}
+                                </div>
+                                <div class="me-2 m-auto">
+                                    <button
+                                        type="button"
+                                        class="btn-close"
+                                        data-action="click->flash#close"
+                                        aria-label="Close">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="search-bar" class="col-form-label">Rechercher</label>
+        </div>
+        <div class="col-auto">
+            <input type="search" data-model="keyWord" id="search-bar" class="form-control">
+        </div>
+        <div class="col-auto">
+            <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                data-action="live#action"
+                data-live-action-param="resetFilters">
+                Effacer les filtres
+            </button>
+        </div>
+        <div class="form-check col-auto">
+            <input class="form-check-input" type="checkbox" value="" id="checkDefault" data-action="live#action" data-live-action-param="getOverdueTasks">
+            <label class="form-check-label" for="checkDefault">
+                Afficher les tâches en retard
+            </label>
+        </div>
+    </div>
+
+
+    {#   Not completed tasks #}
+    <h2>A faire</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Details</th>
+            <th>Priorité
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    data-action="live#action"
+                    data-live-action-param="sortByPriority">
+                    ⇅
+                </button></th>
+            <th>Date de creation
+                <button
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        data-action="live#action"
+                        data-live-action-param="sortByCreatedAt">
+                    ⇅
+                </button>
+            </th>
+            <th>Date limite
+                <button
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        data-action="live#action"
+                        data-live-action-param="sortByDeadline">
+                    ⇅
+                </button>
+            </th>
+            <th>Actions</th>
+            <th>Terminer</th>
+            <th>Jours de retard</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in this.tasksByCriteria %}
+            <tr id="todo-task-{{ task.id }}">
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.details }}</td>
+                <td>
+                    {% set label = task.priority.label %}
+
+                    {% if label == 'Basse' %}
+                        <span class="badge bg-success">Basse</span>
+                    {% elseif label == 'Normale' %}
+                        <span class="badge bg-warning">Normale</span>
+                    {% elseif label == 'Haute' %}
+                        <span class="badge bg-danger">Haute</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inconnue</span>
+                    {% endif %}
+                </td>
+                <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
+                <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a href="{{ path('app_task_show', {'id': task.id, 'keyWord': keyWord, 'sortMode': sortMode.value}) }}">Voir</a>
+                    <a href="{{ path('app_task_edit', {'id': task.id, 'keyWord': keyWord, 'sortMode': sortMode.value}) }}">Modifier</a>
+                </td>
+                <td>
+                    <input
+                        type="checkbox"
+                        data-action="change->live#action"
+                        data-live-action-param="toggleCompletedStatus"
+                        data-live-id-param="{{ task.id }}"
+                        {% if task.completed %}checked{% endif %}
+                    >
+                </td>
+                <td>
+                    {% if task.getDaysLate === 0 %}
+                        aucun
+                    {% else %}
+                        {{ task.getDaysLate }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Aucune tache trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {#   Completed tasks #}
+    <h2>Terminées</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Details</th>
+            <th>Priorité</th>
+            <th>Date de creation</th>
+            <th>Date limite</th>
+            <th>Actions</th>
+            <th>Terminer</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in this.completedTasks %}
+            <tr id="completed-task-{{ task.id }}"
+                class="text-decoration-line-through">
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.details }}</td>
+                <td>
+                    {% set label = task.priority.label %}
+
+                    {% if label == 'Basse' %}
+                        <p class="badge bg-success">Basse</p>
+                    {% elseif label == 'Normale' %}
+                        <span class="badge bg-warning">Normale</span>
+                    {% elseif label == 'Haute' %}
+                        <span class="badge bg-danger">Haute</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inconnue</span>
+                    {% endif %}
+                </td>
+                <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
+                <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a role="link" aria-disabled="true">Voir</a>
+                    <a role="link" aria-disabled="true">Modifier</a>
+                </td>
+                <td>
+                    <input
+                        type="checkbox"
+                        data-action="change->live#action"
+                        data-live-action-param="toggleCompletedStatus"
+                        data-live-id-param="{{ task.id }}"
+                        {% if task.completed %}checked{% endif %}
+                    >
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Aucune tache trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('app_task_new', {'keyWord': keyWord, 'sortMode': sortMode.value}) }}">Nouvelle tache</a>
+</div>
+
