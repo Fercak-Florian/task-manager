@@ -1,20 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-center">
+<div class="d-flex flex-column align-items-center">
+    <div class="row g-3 w-50">
         <form method="post">
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
             {% if app.user %}
-                <div>{{ app.user.firstName }}, bienvenue sur task Manager</div>
+                <div>{{ app.user.firstName }}, bienvenue sur Task Manager.
+                    Continuer vers la <a href="{{ path('app_task_index') }}">liste des tâches</a>
+                </div>
             {% else %}
-                <div class="d-flex flex-column align-items-center">
+                <div class="col-12 text-center">
                     <h1 class="fs-1 fw-bold mt-3">Bienvenue sur Task Manager</h1>
-                    <div class="fs-6">Vous n'avez pas de compte ? <a href="{{ path("app_register") }}">Inscrivez-vous</a></div>
+                    <div class="fs-6">
+                        Vous n'avez pas de compte ?
+                        <a href="{{ path('app_register') }}">Inscrivez-vous</a>
+                    </div>
                 </div>
                 <label for="username" class="fw-bold mt-3">Entrez votre adresse mail</label>
                 <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control mb-3" autocomplete="email" required autofocus>
@@ -39,4 +45,5 @@
             {% endif %}
         </form>
     </div>
+</div>
 {% endblock %}

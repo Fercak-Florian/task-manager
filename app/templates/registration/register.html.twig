@@ -1,19 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="d-flex flex-column align-items-center">
+    <div class="col-12 text-center">
+            <h1 class="fs-1 fw-bold mt-3">Bienvenue sur Task Manager</h1>
+            <div class="fs-6">
+                Déjà inscrit ?
+                <a href="{{ path('app_login') }}" class="my-5">Me connecter</a>
+            </div>
+        </div>
+        {{ form_errors(registrationForm) }}
 
-    {{ form_errors(registrationForm) }}
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.firstName, {label: 'Prénom'}) }}
-        {{ form_row(registrationForm.lastName, {label: 'Nom'}) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Mot de Passe'
-        }) }}
-        <button type="submit" class="btn">Enregistrer</button>
-    {{ form_end(registrationForm) }}
+        {{ form_start(registrationForm) }}
+            {{ form_row(registrationForm.firstName, {label: 'Prénom'}) }}
+            {{ form_row(registrationForm.lastName, {label: 'Nom'}) }}
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.plainPassword, {
+                label: 'Mot de Passe'
+            }) }}
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">S'inscrire</button>
+        </div>
+        {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}
