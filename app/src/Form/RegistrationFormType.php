@@ -20,16 +20,28 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('firstName', TextType::class, [
+                'label' => 'Prénom',
+                'label_attr' => [
+                    'class' => 'fw-bold',
+                    ],
                 'row_attr' => [
                     'class' => 'col-md-6',
                 ],
             ])
             ->add('lastName', TextType::class, [
+                'label' => 'Nom',
+                'label_attr' => [
+                    'class' => 'fw-bold',
+                ],
                 'row_attr' => [
                     'class' => 'col-md-6',
                 ],
             ])
             ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'label_attr' => [
+                    'class' => 'fw-bold',
+                ],
                 'row_attr' => [
                     'class' => 'col-md-12',
                 ],
@@ -37,6 +49,10 @@ class RegistrationFormType extends AbstractType
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
+                'label' => 'Mot de passe',
+                'label_attr' => [
+                    'class' => 'fw-bold',
+                ],
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'row_attr' => [
