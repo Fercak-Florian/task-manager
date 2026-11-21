@@ -100,14 +100,14 @@
                 <td>
                     {% set label = task.priority.label %}
 
-                    {% if label == 'Basse' %}
-                        <span class="badge bg-success">Basse</span>
-                    {% elseif label == 'Normale' %}
-                        <span class="badge bg-warning">Normale</span>
-                    {% elseif label == 'Haute' %}
-                        <span class="badge bg-danger">Haute</span>
+                    {% if label === 'Basse' %}
+                        <span class="badge bg-success w-100">Basse</span>
+                    {% elseif label === 'Normale' %}
+                        <span class="badge bg-warning w-100">Normale</span>
+                    {% elseif label === 'Haute' %}
+                        <span class="badge bg-danger w-100">Haute</span>
                     {% else %}
-                        <span class="badge bg-secondary">Inconnue</span>
+                        <span class="badge bg-secondary w-100">Inconnue</span>
                     {% endif %}
                 </td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
